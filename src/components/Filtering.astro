@@ -1,0 +1,46 @@
+---
+import { type CollectionEntry } from 'astro:content';
+const { tags, tag } = Astro.props as {
+  tags: CollectionEntry<'blog'>['data']['tag'][];
+  tag: CollectionEntry<'blog'>['data']['tag'] | undefined;
+};
+---
+
+<ul>
+  {
+    tags.map((t) => (
+      <li>
+        <a
+          href={t === tag ? '/blog' : `/blog/${t}/`}
+          class:list={t === tag ? 'active' : ''}>
+          {t}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  ul {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    list-style-type: none;
+    margin: 0 0 2rem 0;
+    padding: 0;
+  }
+
+  ul li a {
+    text-decoration: none;
+    border-bottom: 4px solid transparent;
+    transition: 0.2s ease;
+    padding: 0.25em 0.5em;
+    color: var(--black);
+    text-transform: capitalize;
+  }
+
+  ul li a.active {
+    border-color: var(--accent);
+    font-weight: bolder;
+  }
+</style>

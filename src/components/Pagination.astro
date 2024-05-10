@@ -1,0 +1,85 @@
+---
+import { type Page } from 'astro';
+import { type CollectionEntry } from 'astro:content';
+
+const { page, tag = undefined } = Astro.props as {
+  page: Page<CollectionEntry<'blog'>>;
+  tag: CollectionEntry<'blog'>['data']['tag'] | undefined;
+};
+
+function getHref(index: number) {
+  if (tag === undefined) {
+    return `/blog${index > 0 ? `/${index + 1}` : ''}`;
+  } else {
+    return `/blog/${tag}${index > 0 ? `/${index + 1}` : ''}`;
+  }
+}
+---
+
+<ul>
+  <li>
+    <a
+      href={page.url.prev}
+      class:list={[{ disabled: !page.url.prev }]}>
+      &lt;
+    </a>
+  </li>
+  {
+    [...Array(page.lastPage).keys()].map((index) => (
+      <li>
+        <a
+          href={getHref(index)}
+          class:list={[{ active: page.currentPage === index + 1 }]}>
+          {index + 1}
+        </a>
+      </li>
+    ))
+  }
+  <li>
+    <a
+      href={page.url.next}
+      class:list={[{ disabled: !page.url.next }]}>
+      &gt;
+    </a>
+  </li>
+</ul>
+
+<style>
+  ul {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    list-style-type: none;
+    margin: 2rem 0 0 0;
+    padding: 0;
+  }
+
+  ul li a {
+    text-decoration: none;
+    border-bottom: 4px solid transparent;
+    transition: 0.2s ease;
+    padding: 0.25em 0.5em;
+    color: var(--black);
+    text-transform: capitalize;
+  }
+
+  ul li a.active {
+    border-color: var(--accent);
+    font-weight: bolder;
+  }
+
+  ul li a.disabled {
+    color: rgba(var(--gray), 50%);
+    cursor: default;
+  }
+
+  @media (max-width: 720px) {
+    ul {
+      gap: 0.5em;
+    }
+
+    ul li a {
+      padding: 0.125rem 0.5rem;
+    }
+  }
+</style>
